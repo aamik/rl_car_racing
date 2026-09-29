@@ -1,11 +1,12 @@
 """
 train_car.py - Proximal Policy Optimization (PPO) for CarRacing-v3
 
-This script implements PPO to solve the Gymnasium CarRacing-v3 environment using pixel observations.
+This script implements PPO for the Gymnasium CarRacing-v3 environment using pixel observations.
 It is based on the CleanRL single-file implementation structure.
 
 Observation Space: 
-- 4 stacked grayscale frames, shape (4, 96, 96).
+- Environment output: 4 stacked grayscale frames, shape (96, 96, 4).
+- CNN input: batched channel-first tensors, shape (N, 4, 96, 96).
 
 Architecture:
 - 3 Conv2d layers.
@@ -207,9 +208,9 @@ def make_env(env_id, idx, capture_video, run_name, continuous: bool = False):
                 env, _merge_frames, observation_space=new_space
             )
         except Exception:
-            # If the wrappers are not available / applicable, fall back to
-            # returning the env unchanged so users can still run non-image envs.
-            pass
+            # The CNN requires four grayscale channels; fail at preprocessing.
+            env.close()
+            raise
 
         # DO NOT use FlattenObservation or NormalizeObservation for image-based learning.
         # The Agent's network handles the normalization (dividing by 255).

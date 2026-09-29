@@ -123,14 +123,17 @@ def main():
     p.add_argument("--deterministic", action="store_true", default=True)
     p.add_argument("--stochastic", action="store_true", help="If set, sample actions instead of deterministic mean")
     p.add_argument("--device", default=None)
-    p.add_argument("--record", action="store_true", default=True, help="Record videos via RecordVideo wrapper")
+    p.add_argument("--record", action=argparse.BooleanOptionalAction, default=True, help="Record videos; --no-record opens a live window")
     p.add_argument("--out-name", default=None, help="Optional prefix for output video folder")
     p.add_argument("--min-std", type=float, default=0.0, help="Minimum action std to enforce when replaying")
     args = p.parse_args()
 
     deterministic = args.deterministic and not args.stochastic
 
-    model_path = find_latest_model(args.runs_dir, args.pattern)
+    try:
+        model_path = find_latest_model(args.runs_dir, args.pattern)
+    except FileNotFoundError as exc:
+        p.error(f"{exc}. Train with --eval-interval 10 first, or set --pattern to match your checkpoint.")
     print(f"Found model: {model_path}")
 
     vids = replay_model(

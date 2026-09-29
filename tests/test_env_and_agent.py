@@ -10,8 +10,7 @@ def test_make_env_returns_correct_shape():
     obs, _ = env.reset(seed=0)
     arr = np.array(obs)
     # Expect shape (H, W, C) after our TransformObservation
-    assert arr.ndim == 3
-    assert arr.shape[2] == 4 or arr.shape[2] == 3
+    assert arr.shape == (96, 96, 4)
     assert arr.dtype == np.uint8
     env.close()
 
@@ -68,3 +67,13 @@ def test_agent_get_value_shapes():
     v = agent.get_value(x)
     assert v.shape[0] == 1
     assert v.shape[1] == 1
+
+
+def test_preprocessing_errors_are_not_hidden(monkeypatch):
+    def broken_grayscale(*args, **kwargs):
+        raise RuntimeError("preprocessing failed")
+
+    import pytest
+    monkeypatch.setattr(gym.wrappers, "GrayscaleObservation", broken_grayscale)
+    with pytest.raises(RuntimeError, match="preprocessing failed"):
+        make_env("CarRacing-v3", 1, False, "test", continuous=True)()

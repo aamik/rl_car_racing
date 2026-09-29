@@ -16,6 +16,7 @@ The generated HTML contains links to the files and a small table sorted by retur
 import os
 import json
 import argparse
+from pathlib import Path
 from html import escape
 
 
@@ -48,7 +49,8 @@ def render_index(videos, out_path: str):
     videos_sorted = sorted(videos, key=score, reverse=True)
 
     html = [
-        "<html>",
+        "<!DOCTYPE html>",
+        '<html lang="en">',
         '<head><meta charset="utf-8"><title>Video Index</title></head>',
         "<body>",
         f"<h1>Video index ({len(videos_sorted)} videos)</h1>",
@@ -72,6 +74,7 @@ def render_index(videos, out_path: str):
 
     html.extend(["</table>", "</body>", "</html>"])
 
+    Path(out_path).parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as fh:
         fh.write("\n".join(html))
 

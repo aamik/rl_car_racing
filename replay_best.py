@@ -1,8 +1,7 @@
-# replay_best.py
+"""Replay an explicit checkpoint with deterministic actions; optionally record video."""
 import argparse
 import torch
 import numpy as np
-import gymnasium as gym
 from train_car import Agent, make_env  # uses the same make_env/Agent definitions
 
 
@@ -75,7 +74,7 @@ def main():
         total_reward = 0.0
         steps = 0
         while True:
-            # env returns HWC numpy array shape (H,W,C)
+            # Wrapped observations are uint8 (96, 96, 4).
             obs_t = torch.as_tensor(obs, dtype=torch.float32).unsqueeze(0).to(device)
             # deterministic action: use actor mean (bypass sampling)
             with torch.no_grad():

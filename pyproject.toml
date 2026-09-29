@@ -1,7 +1,7 @@
 [project]
 name = "rl-car-racing"
 version = "0.1.0"
-description = "Add your description here"
+description = "Pixel-based PPO for Gymnasium CarRacing with replay and local experiment tracking"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -39,3 +39,7 @@ dev = [
     "pytest-xdist>=3.8.0",
     "ruff>=0.14.0",
 ]
+
+# Box2D invokes SWIG while building its extension in isolation.
+[tool.uv.extra-build-dependencies]
+box2d-py = ["swig==4.3.1"]
