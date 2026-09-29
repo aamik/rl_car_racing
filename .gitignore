@@ -20,3 +20,18 @@ cleanrl/
 
 # IDE
 .vscode/
+
+# Local agent instructions and private context
+.agent/
+.agents/
+.codex/
+.claude/
+.opencode/
+AGENTS.md
+agents.md
+CLAUDE.md
+SEC_*
+.env
+.env.*
+!.env.example
+.ruff_cache/
